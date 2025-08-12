@@ -217,11 +217,11 @@ class GPT(nn.Module):
 
 config = GPTConfig(
     vocab_size=50257,     # use the tokenizer's vocab size
-    block_size=128,       # or whatever context size you're training with
-    n_layer=6,
-    n_head=6,
-    n_embd=384,
-    dropout=0.1,
+    block_size=256,       # increased context size for richer context
+    n_layer=8,            # deeper model now feasible on RTX 3070
+    n_head=8,             # more attention heads
+    n_embd=512,           # larger embedding dimension
+    dropout=0.2,          # increased dropout to reduce overfitting
     bias=True
 )
 
@@ -247,10 +247,9 @@ max_iters = 20000 #increase from 25000
 warmup_steps = 1000 #smoother initial train, earlier 100
 min_lr = 5e-4 #lower rate, earlier 5e-4
 eval_iters = 500 # increased from 100
-batch_size = 16  # reduced from 32 to mitigate GPU OOM
-block_size = 128 #changed from 64, capture longer range dependencies
-
-gradient_accumulation_steps = 16  # reduced from 32 to mitigate GPU OOM
+data_batch = batch_size = 32  # increased batch size leveraging 12GB VRAM
+block_size = 256 # increased context length for training
+gradient_accumulation_steps = 8  # fewer accumulation steps with larger batch
 
 device =  "cuda"
 device_type = 'cuda'
